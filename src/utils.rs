@@ -1,35 +1,49 @@
 use std::fs;
 
-fn get_whitespaces_total(data: &String) -> usize {
-    data.chars().filter(|char| char.is_whitespace()).count()
+struct TextFile {
+    path: String,
 }
 
-fn get_alphabetic_total(data: &String) -> usize {
-    data.chars().filter(|char| char.is_alphabetic()).count()
-}
+impl TextFile {
+    fn get_contents(&self) -> String {
+        fs::read_to_string(&self.path.trim()).expect("There was an error reading the file.")
+    }
 
-fn get_numeric_total(data: &String) -> usize {
-    data.chars().filter(|char| char.is_numeric()).count()
-}
+    fn get_total_whitespaces(&self) -> usize {
+        let contents = self.get_contents();
+        contents.chars().filter(|char| char.is_whitespace()).count()
+    }
 
-fn get_characters_total(data: &String) -> usize {
-    data.chars().count()
-}
+    fn get_total_alphabetic(&self) -> usize {
+        let contents = self.get_contents();
+        contents.chars().filter(|char| char.is_alphabetic()).count()
+    }
 
-fn get_words_total(data: &String) -> usize {
-    data.split_whitespace().count()
-}
+    fn get_total_numbers(&self) -> usize {
+        let contents = self.get_contents();
+        contents.chars().filter(|char| char.is_numeric()).count()
+    }
 
-fn get_file_contents(path: String) -> String {
-    fs::read_to_string(path.trim()).expect("File contents couldn't be loaded.")
+    fn get_total_characters(&self) -> usize {
+        let contents = self.get_contents();
+        contents.chars().count()
+    }
+
+    fn get_total_words(&self) -> usize {
+        let contents = self.get_contents();
+        contents.split_whitespace().count()
+    }
 }
 
 pub fn get_report(path: String) {
-    let contents = get_file_contents(path);
+    let text_file = TextFile { path };
     println!("This is the report for your file:");
-    println!("Alphabetic characters: {}", get_alphabetic_total(&contents));
-    println!("Numeric characters: {}", get_numeric_total(&contents));
-    println!("Whitespaces: {}", get_whitespaces_total(&contents));
-    println!("Total characters: {}", get_characters_total(&contents));
-    println!("Total words: {}", get_words_total(&contents));
+    println!(
+        "Alphabetic characters: {}",
+        text_file.get_total_alphabetic()
+    );
+    println!("Numeric characters: {}", text_file.get_total_numbers());
+    println!("Whitespaces: {}", text_file.get_total_whitespaces());
+    println!("Total characters: {}", text_file.get_total_characters());
+    println!("Total words: {}", text_file.get_total_words());
 }
